@@ -245,6 +245,7 @@ inline float calL2Sqr_fast(float* v1, float* v2, int dim)
         return fastlib::L2SqrSIMD16ExtResiduals(v1, v2, dim);
     else if (dim > 4)
         return fastlib::L2SqrSIMD4ExtResiduals(v1, v2, dim);
+    return fastlib::L2Sqr(v1, v2, dim);
 #else
     float res = 0.0;
     for (int i = 0; i < dim; ++i) {
@@ -252,8 +253,6 @@ inline float calL2Sqr_fast(float* v1, float* v2, int dim)
     }
     return res;
 #endif
-
-
 }
 
 inline float calIp_fast(float* v1, float* v2, int dim)
@@ -267,6 +266,7 @@ inline float calIp_fast(float* v1, float* v2, int dim)
         return fastlib::IpSIMD16ExtResiduals(v1, v2, dim);
     else if (dim > 4)
         return fastlib::IpSIMD4ExtResiduals(v1, v2, dim);
+    return fastlib::InnerProduct(v1, v2, dim);
 #else
     float res = 0.0;
     for (int i = 0; i < dim; ++i) {
@@ -274,8 +274,6 @@ inline float calIp_fast(float* v1, float* v2, int dim)
     }
     return res;
 #endif
-
-
 }
 
 namespace fastlib1 {

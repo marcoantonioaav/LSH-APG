@@ -1,27 +1,28 @@
-#scl enable devtoolset-9 bash
+CXX = g++
+CXXFLAGS = -std=c++17 -Ofast -march=native -fPIC -pthread -Wall -Wextra -I./include -I./src
 
-CC=g++ -std=c++17 -Ofast -lrt -DNDEBUG  -DHAVE_CXX0X -march=native -fpic -w -ftree-vectorize -ftree-vectorizer-verbose=0
+LIB_SRCS = src/Metric.cpp src/LSBTree.cpp
+LIB_OBJS = $(LIB_SRCS:.cpp=.o)
 
-CCOMP=g++ -std=c++17 -Ofast -lrt -DNDEBUG  -DHAVE_CXX0X -openmp -march=native -fpic -w -fopenmp -ftree-vectorize -ftree-vectorizer-verbose=0
-SRCS=$(wildcard ./src/*.cpp)
+STATIC_LIB = liblsbtree.a
+SHARED_LIB = liblsbtree.so
+DEMO_EXEC = benchmark_driver
 
+.PHONY: all clean
 
-lgo:$(SRCS)
-	rm -rf lgo
-	$(CCOMP) $(SRCS) -o lgo
+all: $(STATIC_LIB) $(SHARED_LIB) $(DEMO_EXEC)
 
-lg:$(SRCS)
-	rm -rf lg
-	$(CC) $(SRCS) -o lg
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(STATIC_LIB): $(LIB_OBJS)
+	ar rcs $@ $^
+
+$(SHARED_LIB): $(LIB_OBJS)
+	$(CXX) -shared -o $@ $^
+
+$(DEMO_EXEC): examples/benchmark_driver.cpp $(STATIC_LIB)
+	$(CXX) $(CXXFLAGS) $< -L. -llsbtree -o $@
 
 clean:
-	rm -rf lgo lg
-
-cleancodes:
-	rm -rf $(wildcard *.cpp) $(wildcard *.h) $(wildcard ./src/*.cpp) $(wildcard ./src/*.h)
-
-getcode:
-	7za x wLSH.7z -r -o./
-
-cleanother:
-	rm -rf $(wildcard *.txt)
+	rm -f src/*.o examples/*.o $(STATIC_LIB) $(SHARED_LIB) $(DEMO_EXEC)
