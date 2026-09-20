@@ -119,12 +119,12 @@ int LSBTree::compute_llcp(zint k1, zint k2) const {
 #endif
 }
 
-void LSBTree::fit(const float* dataset, uint32_t N, uint32_t dim) {
+void LSBTree::fit(const float* dataset, uint32_t N, uint32_t dim, bool is_normalized) {
     params_.N = N;
     params_.dim = dim;
     S_ = params_.L * params_.K;
 
-    if (metric_ == MetricType::COSINE) {
+    if (metric_ == MetricType::COSINE && !is_normalized) {
         dataset_storage_.resize(static_cast<size_t>(N) * dim);
         for (uint32_t i = 0; i < N; ++i) {
             Metric::normalize(dataset_storage_.data() + i * dim, dataset + i * dim, dim);

@@ -56,7 +56,7 @@ public:
     ~LSBTree() = default;
 
     // Fits the index using the given dataset pointer [N x dim]
-    void fit(const float* dataset, uint32_t N, uint32_t dim);
+    void fit(const float* dataset, uint32_t N, uint32_t dim, bool is_normalized = false);
 
     // Queries the k nearest neighbors for query_point
     std::vector<Neighbor> query(const float* query_point, uint32_t k, QueryStats* stats = nullptr) const;
