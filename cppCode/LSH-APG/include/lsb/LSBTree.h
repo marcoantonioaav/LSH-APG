@@ -59,7 +59,7 @@ public:
     void fit(const float* dataset, uint32_t N, uint32_t dim, bool is_normalized = false);
 
     // Queries the k nearest neighbors for query_point
-    std::vector<Neighbor> query(const float* query_point, uint32_t k, QueryStats* stats = nullptr) const;
+    std::vector<Neighbor> query(const float* query_point, uint32_t k, QueryStats* stats = nullptr, uint32_t max_candidates = 0) const;
 
     // Saves the index to a binary file
     bool save(const std::string& filepath) const;

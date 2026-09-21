@@ -153,7 +153,7 @@ void LSBTree::fit(const float* dataset, uint32_t N, uint32_t dim, bool is_normal
     is_built_ = true;
 }
 
-std::vector<Neighbor> LSBTree::query(const float* query_point, uint32_t k, QueryStats* stats) const {
+std::vector<Neighbor> LSBTree::query(const float* query_point, uint32_t k, QueryStats* stats, uint32_t max_candidates) const {
     auto start_time = std::chrono::high_resolution_clock::now();
 
     if (stats) {
@@ -184,7 +184,8 @@ std::vector<Neighbor> LSBTree::query(const float* query_point, uint32_t k, Query
     std::vector<bool> visited(params_.N, false);
     std::vector<Neighbor> candidates;
 
-    uint32_t UB = std::min(params_.N, static_cast<uint32_t>(params_.N / 10 + k));
+    uint32_t UB = (max_candidates > 0) ? std::min(params_.N, max_candidates)
+                                       : std::min(params_.N, static_cast<uint32_t>(params_.N / 10 + k));
     int step = 100;
 
     std::vector<std::multimap<zint, uint32_t>::const_iterator> lpos(params_.L), rpos(params_.L), qpos(params_.L);
