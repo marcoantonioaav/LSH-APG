@@ -70,6 +70,21 @@ public:
     const Parameters& get_params() const { return params_; }
     MetricType get_metric() const { return metric_; }
     bool is_built() const { return is_built_; }
+
+    size_t get_index_size() const {
+        size_t size = 0;
+        for (const auto& a : rnd_as_) {
+            size += a.size() * sizeof(float);
+        }
+        size += rnd_bs_.size() * sizeof(float);
+        size += hash_mins_.size() * sizeof(float);
+        size += hash_maxs_.size() * sizeof(float);
+        for (const auto& table : hash_tables_) {
+            // std::multimap node overhead: ~3 pointers (24B) + color/parent (8B) + key_value pair (8B+4B = 12B) ~ 48 bytes per entry
+            size += table.size() * (sizeof(std::pair<const zint, uint32_t>) + 32);
+        }
+        return size;
+    }
 };
 
 } // namespace lsb
